@@ -8,7 +8,7 @@ export const useResponsiveLaneCount = (): number => {
       const width = entries[0].contentRect.width || window.innerWidth;
       if (width < 300) return setColumnCount(1);
       if (width < 640) return setColumnCount(2);
-      if (width < 768) return setColumnCount(3);
+      if (width < 1024) return setColumnCount(3);
       setColumnCount(4);
     };
 

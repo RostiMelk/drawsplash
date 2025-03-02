@@ -6,12 +6,12 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useFilters } from '@/context/FiltersProvider';
 import { fetchUnsplashImages } from '@/lib/unsplash';
-import { useResponsiveColumnCount } from '@/lib/useResponsiveColumnCount';
+import { useResponsiveLaneCount } from '@/lib/useResponsiveLaneCount';
 import { LoaderIcon } from 'lucide-react';
 
 export const DoomScroll = () => {
   const parentRef = useRef<HTMLDivElement>(null);
-  const lanes = useResponsiveColumnCount();
+  const lanes = useResponsiveLaneCount();
   const { filters } = useFilters();
 
   const { status, data, isFetchingNextPage, fetchNextPage, hasNextPage } = useInfiniteQuery({
@@ -30,7 +30,8 @@ export const DoomScroll = () => {
     estimateSize: (i) => {
       const image = images[i]; // We estimate image size based on aspect ratio, not the image height itself.
       const aspectRatio = image.width / image.height;
-      return Math.round(350 / aspectRatio); // This is a bit of a hack, but it works well for most images.
+      const laneWidth = (parentRef.current?.clientWidth ?? window.innerWidth) / lanes;
+      return Math.round(laneWidth / aspectRatio);
     },
     scrollMargin: 32,
     overscan: 5,

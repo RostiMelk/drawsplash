@@ -6,8 +6,8 @@ import { LoaderIcon, PencilIcon, RotateCcwIcon, SearchIcon } from 'lucide-react'
 import { DrawInput } from '@/components/DrawInput';
 import { DockItem } from '@/components/DockItem';
 import { useFilters } from '@/context/FiltersProvider';
+import { submitDrawing } from '@/lib/drawing';
 import type { Stroke } from '@/types/drawing';
-import type { DrawQueryResponse } from '@/app/api/drawing/route';
 
 type Color = {
   name: string;
@@ -30,7 +30,7 @@ export const Dock = () => {
   const [currentStroke, setCurrentStroke] = useState<[number, number, number][]>([]);
   const [strokes, setStrokes] = useState<Stroke[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const drawingRef = useRef<HTMLCanvasElement>(null);
 
   const handleStartStroke = useCallback((points: [number, number, number][]) => {
     setCurrentStroke(points);
@@ -47,28 +47,19 @@ export const Dock = () => {
     }
   }, [currentStroke, color]);
 
-  const resetCanvas = useCallback(() => {
+  const resetDrawing = useCallback(() => {
     setStrokes([]);
     setCurrentStroke([]);
   }, []);
 
-  const submitCanvas = useCallback(async () => {
-    const canvas = canvasRef.current;
+  const handleSubmitDrawing = useCallback(async () => {
+    const canvas = drawingRef.current;
     if (!canvas) return;
 
     setIsLoading(true);
     try {
-      const base64 = canvas.toDataURL('image/png');
-      const response = await fetch(base64);
-      const blob = await response.blob();
-      const formData = new FormData();
-      formData.append('image', blob, 'drawing.png');
-      const res = await fetch('/api/drawing', {
-        method: 'POST',
-        body: formData,
-      });
-      const json: DrawQueryResponse = await res.json();
-      dispatch({ type: 'SET_QUERY', payload: json.query });
+      const query = await submitDrawing(canvas);
+      dispatch({ type: 'SET_QUERY', payload: query });
       setShowDrawInput(false);
     } catch (error) {
       console.error('Error submitting drawing:', error);
@@ -84,10 +75,10 @@ export const Dock = () => {
   const baseListStyles = 'flex items-center justify-center gap-2';
 
   return (
-    <div className="fixed bottom-6 grid w-full place-items-center gap-3">
+    <div className="fixed bottom-6 grid w-full place-items-center gap-3 px-2">
       <motion.nav
         layout="preserve-aspect"
-        className="relative z-10 row-start-2 flex items-center rounded-full border border-slate-200 bg-white p-2 shadow-xl"
+        className="relative z-10 row-start-2 flex max-w-full items-center overflow-x-auto rounded-full border border-slate-200 bg-white p-2 shadow-2xl md:overflow-x-visible"
       >
         <ul className={baseListStyles}>
           <li>
@@ -105,7 +96,7 @@ export const Dock = () => {
                 <ul className={baseListStyles}>
                   <li>
                     <DockItem
-                      onClick={resetCanvas}
+                      onClick={resetDrawing}
                       title="Reset"
                       icon={RotateCcwIcon}
                       disabled={isLoading}
@@ -126,8 +117,8 @@ export const Dock = () => {
 
                   <li>
                     <DockItem
-                      onClick={submitCanvas}
                       title="Search"
+                      onClick={handleSubmitDrawing}
                       icon={isLoading ? LoaderIcon : SearchIcon}
                       disabled={isLoading}
                       className={isLoading ? 'animate-spin' : ''}
@@ -153,18 +144,17 @@ export const Dock = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 300, scale: 0.1 }}
             transition={{ originY: 0 }}
+            className="max-w-2xl rounded-lg border-8 border-white shadow-2xl"
           >
-            <div className="max-w-2xl rounded-lg border-8 border-white shadow-lg">
-              <DrawInput
-                ref={canvasRef}
-                color={color}
-                strokes={strokes}
-                currentStroke={currentStroke}
-                onStartStroke={handleStartStroke}
-                onUpdateStroke={handleUpdateStroke}
-                onEndStroke={handleEndStroke}
-              />
-            </div>
+            <DrawInput
+              ref={drawingRef}
+              color={color}
+              strokes={strokes}
+              currentStroke={currentStroke}
+              onStartStroke={handleStartStroke}
+              onUpdateStroke={handleUpdateStroke}
+              onEndStroke={handleEndStroke}
+            />
           </motion.div>
         )}
       </AnimatePresence>
