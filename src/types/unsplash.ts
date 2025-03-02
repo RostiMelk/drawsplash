@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const UnsplashImageSchema = z.object({
   id: z.string(),
@@ -30,12 +30,12 @@ export const UnsplashImageSchema = z.object({
 });
 
 export const UnsplashFilterSchema = z.object({
-  query: z.string().optional(),
-  orientation: z.enum(["landscape", "portrait", "squarish"]).optional(),
+  page: z.union([z.number(), z.string().regex(/^\d+$/).transform(Number)]).default(1),
+  per_page: z.union([z.number(), z.string().regex(/^\d+$/).transform(Number)]).default(20),
+  query: z.string().default('random'),
+  orientation: z.enum(['landscape', 'portrait', 'squarish']).optional(),
   color: z.string().optional(),
-  orderBy: z.enum(["relevant", "latest"]).optional(),
-  page: z.number().optional(),
-  perPage: z.number().optional(),
+  order_by: z.enum(['relevant', 'latest']).optional(),
 });
 
 export const UnsplashResponseSchema = z.object({
@@ -44,6 +44,6 @@ export const UnsplashResponseSchema = z.object({
   total_pages: z.number(),
 });
 
-export type UnsplashFilter = z.infer<typeof UnsplashFilterSchema>;
 export type UnsplashImage = z.infer<typeof UnsplashImageSchema>;
+export type UnsplashFilter = Partial<z.infer<typeof UnsplashFilterSchema>>;
 export type UnsplashResponse = z.infer<typeof UnsplashResponseSchema>;

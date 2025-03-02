@@ -8,15 +8,15 @@ interface FiltersProviderProps {
 }
 
 type FilterAction =
-  | { type: 'SET_QUERY'; payload: string | undefined }
+  | { type: 'SET_QUERY'; payload: UnsplashFilter['query'] }
   | {
       type: 'SET_ORIENTATION';
-      payload: 'landscape' | 'portrait' | 'squarish' | undefined;
+      payload: UnsplashFilter['orientation'];
     }
-  | { type: 'SET_COLOR'; payload: string | undefined }
-  | { type: 'SET_ORDER_BY'; payload: 'relevant' | 'latest' | undefined }
-  | { type: 'SET_PER_PAGE'; payload: number | undefined }
-  | { type: 'CLEAR_FILTERS'; payload: undefined };
+  | { type: 'SET_COLOR'; payload: UnsplashFilter['color'] }
+  | { type: 'SET_ORDER_BY'; payload: UnsplashFilter['order_by'] }
+  | { type: 'SET_PER_PAGE'; payload: UnsplashFilter['per_page'] }
+  | { type: 'CLEAR_FILTERS' };
 
 interface FiltersContextType {
   filters: Omit<UnsplashFilter, 'page'>; // Let the scroller handle the pagination
@@ -34,9 +34,9 @@ const filtersReducer = (state: UnsplashFilter, action: FilterAction): UnsplashFi
     case 'SET_COLOR':
       return { ...state, color: action.payload };
     case 'SET_ORDER_BY':
-      return { ...state, orderBy: action.payload };
+      return { ...state, order_by: action.payload };
     case 'SET_PER_PAGE':
-      return { ...state, perPage: action.payload };
+      return { ...state, per_page: action.payload };
     case 'CLEAR_FILTERS':
       return initialFilters;
     default:

@@ -120,7 +120,7 @@ export const Dock = () => {
                       title="Search"
                       onClick={handleSubmitDrawing}
                       icon={isLoading ? LoaderIcon : SearchIcon}
-                      disabled={isLoading}
+                      disabled={isLoading || strokes.length === 0}
                       className={isLoading ? 'animate-spin' : ''}
                     />
                   </li>

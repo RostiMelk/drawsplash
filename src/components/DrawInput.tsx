@@ -141,6 +141,7 @@ export const DrawInput = ({
     <canvas
       ref={ref}
       className="block w-full cursor-crosshair"
+      aria-label="Drawing canvas for image search"
       style={{ aspectRatio: `${DRAWING_WIDTH}/${DRAWING_HEIGHT}` }}
       onMouseDown={startDrawing}
       onMouseMove={draw}
