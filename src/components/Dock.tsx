@@ -1,6 +1,5 @@
 'use client';
 
-import cn from 'clsx';
 import { useState, useCallback, useRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { LoaderIcon, PencilIcon, RotateCcwIcon, SearchIcon } from 'lucide-react';
@@ -98,12 +97,12 @@ export const Dock = () => {
           <AnimatePresence mode="wait">
             <motion.li
               key={showDrawInput ? 'show-draw' : 'hide-draw'}
-              initial={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
+              exit={{ opacity: 0, y: 6 }}
             >
               {showDrawInput ? (
-                <ul className={cn(baseListStyles, 'overflow-x-auto')}>
+                <ul className={baseListStyles}>
                   <li>
                     <DockItem
                       onClick={resetCanvas}
