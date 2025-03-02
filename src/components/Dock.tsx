@@ -1,5 +1,6 @@
 'use client';
 
+import cn from 'clsx';
 import { useState, useCallback, useRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { LoaderIcon, PencilIcon, RotateCcwIcon, SearchIcon } from 'lucide-react';
@@ -81,57 +82,68 @@ export const Dock = () => {
     setShowDrawInput((prev) => !prev);
   }, []);
 
+  const baseListStyles = 'flex items-center justify-center gap-2';
+
   return (
-    <div className="fixed bottom-6 left-1/2 container mx-auto grid -translate-x-1/2 place-items-center gap-3">
+    <div className="fixed bottom-6 grid w-full place-items-center gap-3">
       <motion.nav
         layout="preserve-aspect"
         className="relative z-10 row-start-2 flex items-center rounded-full border border-slate-200 bg-white p-2 shadow-xl"
       >
-        <ul className="flex items-center justify-center gap-2">
+        <ul className={baseListStyles}>
           <li>
             <DockItem onClick={toggleDrawing} title="Draw" icon={PencilIcon} disabled={isLoading} />
           </li>
 
-          {showDrawInput ? (
-            <>
-              <li>
-                <DockItem
-                  onClick={resetCanvas}
-                  title="Reset"
-                  icon={RotateCcwIcon}
-                  disabled={isLoading}
-                />
-              </li>
+          <AnimatePresence mode="wait">
+            <motion.li
+              key={showDrawInput ? 'show-draw' : 'hide-draw'}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+            >
+              {showDrawInput ? (
+                <ul className={cn(baseListStyles, 'overflow-x-auto')}>
+                  <li>
+                    <DockItem
+                      onClick={resetCanvas}
+                      title="Reset"
+                      icon={RotateCcwIcon}
+                      disabled={isLoading}
+                    />
+                  </li>
 
-              {colors.map((c) => (
-                <li key={c.hex}>
-                  <DockItem
-                    onClick={() => setColor(c.hex)}
-                    title={c.name}
-                    color={c.hex}
-                    active={color === c.hex}
-                    disabled={isLoading}
-                  />
-                </li>
-              ))}
+                  {colors.map((c) => (
+                    <li key={c.hex}>
+                      <DockItem
+                        onClick={() => setColor(c.hex)}
+                        title={c.name}
+                        color={c.hex}
+                        active={color === c.hex}
+                        disabled={isLoading}
+                      />
+                    </li>
+                  ))}
 
-              <li>
-                <DockItem
-                  onClick={submitCanvas}
-                  title="Search"
-                  icon={isLoading ? LoaderIcon : SearchIcon}
-                  disabled={isLoading}
-                  className={isLoading ? 'animate-spin' : ''}
-                />
-              </li>
-            </>
-          ) : (
-            <h1 className="pr-2 pl-1 text-sm font-medium text-slate-700">
-              {filters.query
-                ? `Searching "${filters.query}"`
-                : 'Ever wanted to draw to search images? Me neither'}
-            </h1>
-          )}
+                  <li>
+                    <DockItem
+                      onClick={submitCanvas}
+                      title="Search"
+                      icon={isLoading ? LoaderIcon : SearchIcon}
+                      disabled={isLoading}
+                      className={isLoading ? 'animate-spin' : ''}
+                    />
+                  </li>
+                </ul>
+              ) : (
+                <h1 className="pr-2 pl-1 text-sm font-medium text-slate-700">
+                  {filters.query
+                    ? `Searching "${filters.query}"`
+                    : 'Ever wanted to draw to search images? Me neither'}
+                </h1>
+              )}
+            </motion.li>
+          </AnimatePresence>
         </ul>
       </motion.nav>
 
