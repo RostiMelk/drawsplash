@@ -24,7 +24,7 @@ export const DockItem = ({ onClick, title, color, active, icon: Icon, ...props }
           'grid size-9 cursor-pointer place-items-center rounded-full border border-slate-300 outline-offset-2 transition-all hover:bg-slate-100 data-[active=true]:outline-2',
           props.className,
         )}
-        style={{ backgroundColor: color, outlineColor: color }}
+        style={{ backgroundColor: color, outlineColor: color, borderColor: color }}
         data-active={active}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
