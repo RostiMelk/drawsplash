@@ -85,7 +85,7 @@ export const DoomScroll = () => {
               width={image.width}
               height={image.height}
               className="size-full rounded-lg object-cover"
-              srcSet={`${image.urls.thumb} 1x, ${image.urls.thumb} 2x`}
+              srcSet={`${image.urls.thumb} 1x, ${image.urls.small} 2x`}
             />
           </motion.div>
         );
