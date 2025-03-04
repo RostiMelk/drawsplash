@@ -38,7 +38,7 @@ export const DockItem = ({ onClick, title, color, active, icon: Icon, ...props }
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
             transition={{ duration: 0.15, delay: 0.1 }}
-            className="absolute bottom-full left-1/2 mb-0.5 -translate-x-1/2 rounded border border-slate-300 bg-slate-50 px-2 py-1 text-xs"
+            className="absolute bottom-full left-1/2 mb-0.5 hidden -translate-x-1/2 rounded border border-slate-300 bg-slate-50 px-2 py-1 text-xs md:block"
           >
             {title}
           </motion.div>
