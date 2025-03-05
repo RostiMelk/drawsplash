@@ -15,7 +15,7 @@ export const DoomScroll = () => {
   const { filters } = useFilters();
 
   const { status, data, isFetchingNextPage, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    queryKey: ['unsplash-images', JSON.stringify(filters)],
+    queryKey: ['unsplash-images', filters],
     queryFn: ({ pageParam, signal }) => fetchUnsplashImages(filters, pageParam, signal),
     getNextPageParam: (lastPage) =>
       lastPage.nextPage <= lastPage.images.total_pages ? lastPage.nextPage : undefined,
