@@ -113,6 +113,7 @@ export const DrawInput = ({
 
   const startDrawing = useCallback(
     (e: DrawEvent) => {
+      e.stopPropagation();
       const c = getCoordinates('touches' in e ? e.touches[0] : e.nativeEvent);
       if (!c) return;
       setIsDrawing(true);
@@ -123,6 +124,7 @@ export const DrawInput = ({
 
   const draw = useCallback(
     (e: DrawEvent) => {
+      e.stopPropagation();
       if (!isDrawing) return;
       const c = getCoordinates('touches' in e ? e.touches[0] : e.nativeEvent);
       if (!c) return;
@@ -131,11 +133,15 @@ export const DrawInput = ({
     [isDrawing, getCoordinates, onUpdateStroke, currentStroke],
   );
 
-  const stopDrawing = useCallback(() => {
-    if (!isDrawing) return;
-    setIsDrawing(false);
-    onEndStroke();
-  }, [isDrawing, onEndStroke]);
+  const stopDrawing = useCallback(
+    (e: DrawEvent) => {
+      e.stopPropagation();
+      if (!isDrawing) return;
+      setIsDrawing(false);
+      onEndStroke();
+    },
+    [isDrawing, onEndStroke],
+  );
 
   return (
     <canvas
